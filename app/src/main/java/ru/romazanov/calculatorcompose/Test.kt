@@ -240,8 +240,43 @@ class Calculator {
 
 
 fun main() {
-    val calculator = Calculator()
-    calculator.loop()
+   // val calculator = Calculator()
+   // calculator.loop()
+
+    var text = "1234567"
+
+    fun delete() {
+        text = text.substring(0, text.length - 1)
+    }
+
+    delete()
+
+    println(text)
+    delete()
+    println(text)
 }
 
 
+
+val list = listOf(
+    "Del",
+    "(",
+    ")",
+    "/",
+    "7",
+    "8",
+    "9",
+    "*",
+    "4",
+    "5",
+    "6",
+    "-",
+    "1",
+    "2",
+    "3",
+    "+",
+    "0",
+    "00",
+    ".",
+    "="
+)

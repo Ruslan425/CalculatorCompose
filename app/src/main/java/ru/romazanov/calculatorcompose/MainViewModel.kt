@@ -140,5 +140,10 @@ class MainViewModel : ViewModel() {
         return queue[0]
     }
 
+    fun delete() {
+        if (text.value.isNotEmpty()) {
+            text.value = text.value.substring(0, text.value.length - 1)
+        }
+    }
 
 }
