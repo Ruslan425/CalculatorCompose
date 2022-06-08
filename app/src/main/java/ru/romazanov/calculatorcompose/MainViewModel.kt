@@ -7,6 +7,8 @@ import java.math.BigInteger
 
 class MainViewModel : ViewModel() {
 
+
+
     var text = mutableStateOf("")
     var answer = mutableStateOf("")
     var list = mutableStateListOf<String>()
@@ -24,9 +26,6 @@ class MainViewModel : ViewModel() {
         text.value = ""
     }
 
-    /*
-       Функция принимает строку, возвращает списко в ОПН
-        */
     private fun newList(str: String): MutableList<String> {
         /*
           Фунция для работы с очередью
@@ -97,10 +96,6 @@ class MainViewModel : ViewModel() {
         return number
     }
 
-    /*
-     Функция принимает список с цифрами и операциями в ОПН
-     возвращает сумму.
-     */
     private fun sum(list: MutableList<String>): Double{
 
         val queue = mutableListOf<Double>()
