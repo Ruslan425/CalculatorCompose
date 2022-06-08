@@ -12,18 +12,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import ru.romazanov.calculatorcompose.ui.Screens.StartScreen
 import ru.romazanov.calculatorcompose.ui.theme.CalculatorComposeTheme
+import ru.romazanov.calculatorcompose.ui.utils.constants.VIEW_MODEL
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             CalculatorComposeTheme {
-                val viewModel = MainViewModel()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    StartScreen(viewModel = viewModel)
+                    StartScreen(viewModel = VIEW_MODEL)
                 }
             }
         }
