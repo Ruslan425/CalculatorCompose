@@ -14,10 +14,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import ru.romazanov.calculatorcompose.MainViewModel
 import ru.romazanov.calculatorcompose.ui.elements.DefaultButton
@@ -30,18 +32,22 @@ fun StartScreen(
     viewModel: MainViewModel,
 ) {
 
-    val text by viewModel.text
-    val answer by viewModel.answer
+    val number by viewModel.number
+    val calculation by viewModel.calculation
     val list = viewModel.list.toList().joinToString(" ")
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
+
+    val calculationList = viewModel.calculationList.toList()
+
+
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
                 elevation = 4.dp,
-                backgroundColor = MaterialTheme.colors.primaryVariant
+                backgroundColor = Color.White
             ) {
                 Row(
                     modifier = Modifier
@@ -55,20 +61,51 @@ fun StartScreen(
                             scaffoldState.drawerState.open()
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.Menu, contentDescription = "")
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "",
+                            tint = Color.Black
+                        )
                     }
                     Text(
                         text = "Калькулятор",
-                        style = MaterialTheme.typography.h5
+                        style = MaterialTheme.typography.h5,
+                        color = Color.Black
                     )
                 }
             }
         },
         drawerElevation = 4.dp,
         drawerContent = {
-            LazyColumn(modifier = Modifier
-                .padding(8.dp)
-                .fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxSize()
+            ) {
+
+                val data = calculationList.groupBy { it.date }
+
+                data.forEach { (initial, contactsForInitial) ->
+                    stickyHeader {
+                        Row(
+                            modifier = Modifier
+                                .height(50.dp)
+                                .fillMaxWidth()
+                                .background(Color.White),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Spacer(modifier = Modifier.padding(3.dp))
+                            Text(
+                                text = initial,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Light,
+                            )
+                        }
+                    }
+                    items(contactsForInitial) { item ->
+                        Text(text = item.calculation)
+                    }
+                }
 
             }
         }
@@ -84,20 +121,9 @@ fun StartScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp),
-                text = list,
+                text = calculation,
                 textAlign = TextAlign.End,
-                style = MaterialTheme.typography.h5.copy(color = Color.LightGray),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
-                text = text,
-                textAlign = TextAlign.End,
-                style = MaterialTheme.typography.h2,
+                style = MaterialTheme.typography.h3,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -105,7 +131,7 @@ fun StartScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp),
-                text = answer,
+                text = number,
                 textAlign = TextAlign.End,
                 style = MaterialTheme.typography.h1,
                 maxLines = 1,

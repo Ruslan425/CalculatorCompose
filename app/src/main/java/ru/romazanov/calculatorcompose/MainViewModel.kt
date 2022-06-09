@@ -1,29 +1,58 @@
 package ru.romazanov.calculatorcompose
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import java.math.BigInteger
+import ru.romazanov.calculatorcompose.data.Calculation
+import java.math.RoundingMode
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainViewModel : ViewModel() {
 
 
-
-    var text = mutableStateOf("")
-    var answer = mutableStateOf("")
+    var number = mutableStateOf("")
+    var calculation = mutableStateOf("")
     var list = mutableStateListOf<String>()
+    private val test = mutableStateOf(true)
 
-    fun addMinusToText() {
-        if (!text.value.matches("-\\d+.*\\d*".toRegex())) {
-            text.value = "-${text.value}"
+    fun onClickNumberKey(key: String){
+        if(test.value) {
+            number.value += key
         } else {
-            text.value = text.value.substringAfter("-")
+            test.value = true
+            number.value = key
         }
     }
 
-    fun addToList()  {
-        list.add(text.value)
-        text.value = ""
+    fun onClickOperatorKey(key: String) {
+        addToList()
+        calculation.value += number.value + key
+        list.add(key)
+        test.value = false
+    }
+
+    fun onClickAnswer(key: String) {
+        addToList()
+        calculation.value += number.value + key
+        number.value = getSum(list.toList().joinToString(" "))
+        deleteAll()
+        test.value = false
+    }
+
+    val calculationList = mutableStateListOf<Calculation>()
+
+    fun addMinusToText() {
+        if (!number.value.matches("-\\d+.*\\d*".toRegex())) {
+            number.value = "-${number.value}"
+        } else {
+            number.value = number.value.substringAfter("-")
+        }
+    }
+
+    private fun addToList() {
+        list.add(number.value)
     }
 
     private fun newList(str: String): MutableList<String> {
@@ -41,6 +70,7 @@ class MainViewModel : ViewModel() {
             queue.removeAt(queue.lastIndex)
             popPush(queue, number)
         }
+
         val list = str.split(" ").toMutableList()
         val number = mutableListOf<String>() // ОПН
         val queue = mutableListOf<String>()  // очередь
@@ -96,7 +126,7 @@ class MainViewModel : ViewModel() {
         return number
     }
 
-    private fun sum(list: MutableList<String>): Double{
+    private fun sum(list: MutableList<String>): Double {
 
         val queue = mutableListOf<Double>()
 
@@ -121,20 +151,44 @@ class MainViewModel : ViewModel() {
                 }
             }
         }
-        return queue[0]
+        return if(list.isEmpty()) 0.0 else queue[0]
+
     }
 
-    fun getSum(text: String): String {
-        return sum(newList(text)).toString()
+    private fun getSum(text: String): String {
+
+        @SuppressLint("SimpleDateFormat")
+        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate: String = sdf.format(Date())
+
+        calculationList.add(
+            Calculation(
+                id = Random().nextInt(),
+                calculation = list.toList()
+                    .joinToString("") + " = " + sum(newList(text)).toString(),
+                date = currentDate
+            )
+        )
+        val answer = sum(newList(text)).toBigDecimal()
+
+        return answer.setScale(3, RoundingMode.CEILING).toString()
     }
 
     fun delete() {
-        if (text.value.isNotEmpty()) {
-            text.value = text.value.substring(0, text.value.length - 1)
+
+        if (number.value.isNotEmpty()) {
+            number.value = number.value.substring(0, number.value.length - 1)
+        } else if (number.value.isEmpty() && calculation.value.isNotEmpty()) {
+            calculation.value = calculation.value.substring(0, calculation.value.length - 1)
         } else {
             list.clear()
-            answer.value = ""
         }
     }
+
+    private fun deleteAll() {
+        list.clear()
+        calculation.value = ""
+    }
+
 
 }
