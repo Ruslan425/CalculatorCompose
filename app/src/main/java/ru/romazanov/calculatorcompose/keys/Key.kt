@@ -44,6 +44,6 @@ sealed class Key(val name: String, val onClick: (vm: MainViewModel) -> Unit) {
 
     object Zero : Key(name = "0", onClick = { it.onClickNumberKey("0")})
     object Zero2 : Key(name = "+/-", onClick = { it.addMinusToText() })
-    object A : Key(name = ".", onClick = { it.onClickNumberKey(".") })
+    object A : Key(name = ".", onClick = { it.onClickPoint()})
 }
 

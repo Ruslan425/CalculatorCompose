@@ -17,14 +17,33 @@ class MainViewModel : ViewModel() {
     var list = mutableStateListOf<String>()
     private val test = mutableStateOf(true)
 
-    fun onClickNumberKey(key: String){
-        if(test.value) {
+    fun onClickNumberKey(key: String) {
+        if (test.value) {
             number.value += key
         } else {
             test.value = true
             number.value = key
         }
     }
+
+    fun onClickPoint() {
+        if (number.value.isEmpty()) {
+            if (test.value) {
+                number.value += "0."
+            } else {
+                test.value = true
+                number.value = "0."
+            }
+        } else {
+            if (test.value) {
+                number.value += "."
+            } else {
+                test.value = true
+                number.value = "."
+            }
+        }
+    }
+
 
     fun onClickOperatorKey(key: String) {
         addToList()
@@ -151,7 +170,7 @@ class MainViewModel : ViewModel() {
                 }
             }
         }
-        return if(list.isEmpty()) 0.0 else queue[0]
+        return if (list.isEmpty()) 0.0 else queue[0]
 
     }
 
